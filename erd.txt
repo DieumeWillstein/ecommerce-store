@@ -1,0 +1,109 @@
+Table categories {
+  category_id int [pk, increment]
+  name varchar
+  parent_category_id int
+  description text
+}
+
+Table products {
+  product_id int [pk, increment]
+  sku varchar [unique]
+  name varchar
+  description text
+  price decimal
+  active boolean
+  created_at timestamp
+}
+
+Table product_categories {
+  product_id int
+  category_id int
+  indexes {
+    (product_id, category_id) [pk]
+  }
+}
+
+Table inventory {
+  product_id int [pk]
+  stock_qty int
+  last_restocked timestamp
+}
+
+Table customers {
+  customer_id int [pk, increment]
+  first_name varchar
+  last_name varchar
+  email varchar [unique]
+  phone varchar
+  created_at timestamp
+  active boolean
+}
+
+Table addresses {
+  address_id int [pk, increment]
+  customer_id int
+  address_line1 varchar
+  address_line2 varchar
+  city varchar
+  state varchar
+  postal_code varchar
+  country varchar
+  address_type varchar
+}
+
+Table orders {
+  order_id int [pk, increment]
+  customer_id int
+  shipping_address_id int
+  billing_address_id int
+  order_date timestamp
+  status varchar
+  subtotal decimal
+  tax decimal
+  shipping_fee decimal
+  total decimal
+}
+
+Table order_items {
+  order_item_id int [pk, increment]
+  order_id int
+  product_id int
+  quantity int
+  price_at_purchase decimal
+  line_total decimal
+}
+
+Table payments {
+  payment_id int [pk, increment]
+  order_id int
+  amount decimal
+  payment_method varchar
+  status varchar
+  paid_at timestamp
+}
+
+Table reviews {
+  review_id int [pk, increment]
+  product_id int
+  customer_id int
+  rating tinyint
+  title varchar
+  body text
+  created_at timestamp
+  approved boolean
+}
+
+Ref: categories.parent_category_id > categories.category_id
+Ref: product_categories.product_id > products.product_id
+Ref: product_categories.category_id > categories.category_id
+Ref: inventory.product_id > products.product_id
+Ref: addresses.customer_id > customers.customer_id
+Ref: orders.customer_id > customers.customer_id
+Ref: orders.shipping_address_id > addresses.address_id
+Ref: orders.billing_address_id > addresses.address_id
+Ref: order_items.order_id > orders.order_id
+Ref: order_items.product_id > products.product_id
+Ref: payments.order_id > orders.order_id
+Ref: reviews.product_id > products.product_id
+Ref: reviews.customer_id > customers.customer_id
+
